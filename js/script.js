@@ -99,6 +99,16 @@ function modalClose() {
   document.body.style.overflow = "";
 }
 
+function modalShowByScroll() {
+  if (
+    window.scrollY + document.documentElement.clientHeight >=
+    document.documentElement.scrollHeight
+  ) {
+    modalOpen();
+    window.removeEventListener("scroll", modalShowByScroll);
+  }
+}
+
 modalTrigger.forEach((btn) => {
   btn.addEventListener("click", modalOpen);
 });
@@ -112,3 +122,5 @@ modal.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   if (e.code === "Escape" && modal.style.display === "block") modalClose();
 });
+
+window.addEventListener("scroll", modalShowByScroll);
