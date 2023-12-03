@@ -85,18 +85,22 @@ setClock(".timer", deadline);
 // modal
 const modalTrigger = document.querySelectorAll("[data-modal]"),
   modalCloseBtn = document.querySelector("[data-close]"),
-  modal = document.querySelector(".modal");
+  modal = document.querySelector(".modal"),
+  modalTimerId = setTimeout(modalOpen, 30000);
 
-function modalClose(params) {
+function modalOpen() {
+  modal.style.display = "block";
+  document.body.style.overflow = "hidden";
+  clearTimeout(modalTimerId);
+}
+
+function modalClose() {
   modal.style.display = "none";
   document.body.style.overflow = "";
 }
 
 modalTrigger.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    modal.style.display = "block";
-    document.body.style.overflow = "hidden";
-  });
+  btn.addEventListener("click", modalOpen);
 });
 
 modalCloseBtn.addEventListener("click", modalClose);
