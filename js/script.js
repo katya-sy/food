@@ -32,7 +32,7 @@ tabsNav.addEventListener("click", (e) => {
 });
 
 // timer
-const deadline = "2023-12-02";
+const deadline = "2023-12-10";
 
 function getTimeRemaining(endtime) {
   const t = Date.parse(endtime) - new Date(),
@@ -81,3 +81,30 @@ function setClock(selector, endtime) {
 }
 
 setClock(".timer", deadline);
+
+// modal
+const modalTrigger = document.querySelectorAll("[data-modal]"),
+  modalCloseBtn = document.querySelector("[data-close]"),
+  modal = document.querySelector(".modal");
+
+function modalClose(params) {
+  modal.style.display = "none";
+  document.body.style.overflow = "";
+}
+
+modalTrigger.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+  });
+});
+
+modalCloseBtn.addEventListener("click", modalClose);
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) modalClose();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Escape" && modal.style.display === "block") modalClose();
+});
