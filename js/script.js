@@ -127,13 +127,14 @@ window.addEventListener("scroll", modalShowByScroll);
 
 // cards
 class MenuCard {
-  constructor(imgUrl, imgAlt, title, desc, price, parentSelector) {
+  constructor(imgUrl, imgAlt, title, desc, price, parentSelector, ...classes) {
     this.imgUrl = imgUrl;
     this.imgAlt = imgAlt;
     this.title = title;
     this.desc = desc;
     this.price = price;
     this.parent = document.querySelector(`${parentSelector}`);
+    this.classes = classes;
     this.transferCurrency = 80;
     this.changeToRub();
     this.render(this.imgUrl, this.imgAlt, this.title, this.desc, this.price);
@@ -145,7 +146,14 @@ class MenuCard {
 
   render() {
     const item = document.createElement("div");
-    item.classList.add("menu__item");
+
+    if (this.classes.length === 0) {
+      this.classes = "menu__item";
+      item.classList.add(this.classes);
+    } else {
+      this.classes.forEach((className) => item.classList.add(className));
+    }
+
     item.innerHTML = `
     <img src="${this.imgUrl}" alt="${this.imgAlt}" />
     <h3 class="menu__item-subtitle">Меню "${this.title}"</h3>
