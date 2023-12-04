@@ -124,3 +124,68 @@ document.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("scroll", modalShowByScroll);
+
+// cards
+class MenuCard {
+  constructor(imgUrl, imgAlt, title, desc, price, parentSelector) {
+    this.imgUrl = imgUrl;
+    this.imgAlt = imgAlt;
+    this.title = title;
+    this.desc = desc;
+    this.price = price;
+    this.parent = document.querySelector(`${parentSelector}`);
+    this.transferCurrency = 80;
+    this.changeToRub();
+    this.render(this.imgUrl, this.imgAlt, this.title, this.desc, this.price);
+  }
+
+  changeToRub() {
+    this.price = +this.price * this.transferCurrency;
+  }
+
+  render() {
+    const item = document.createElement("div");
+    item.classList.add("menu__item");
+    item.innerHTML = `
+    <img src="${this.imgUrl}" alt="${this.imgAlt}" />
+    <h3 class="menu__item-subtitle">Меню "${this.title}"</h3>
+    <div class="menu__item-descr">
+      ${this.desc}
+    </div>
+    <div class="menu__item-divider"></div>
+    <div class="menu__item-price">
+      <div class="menu__item-cost">Цена:</div>
+      <div class="menu__item-total"><span>${this.price}</span> руб/день</div>
+    </div>
+    `;
+
+    this.parent.append(item);
+  }
+}
+
+new MenuCard(
+  "img/tabs/vegy.jpg",
+  "vegy",
+  "Фитнес",
+  'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+  3.7,
+  ".menu__field .container"
+);
+
+new MenuCard(
+  "img/tabs/elite.jpg",
+  "elite",
+  "Премиум",
+  "В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
+  7,
+  ".menu__field .container"
+);
+
+new MenuCard(
+  "img/tabs/post.jpg",
+  "post",
+  "Постное",
+  "Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.",
+  5.5,
+  ".menu__field .container"
+);
