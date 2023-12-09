@@ -84,7 +84,6 @@ setClock(".timer", deadline);
 
 // modal
 const modalTrigger = document.querySelectorAll("[data-modal]"),
-  modalCloseBtn = document.querySelector("[data-close]"),
   modal = document.querySelector(".modal"),
   modalTimerId = setTimeout(modalOpen, 30000);
 
@@ -113,10 +112,9 @@ modalTrigger.forEach((btn) => {
   btn.addEventListener("click", modalOpen);
 });
 
-modalCloseBtn.addEventListener("click", modalClose);
-
 modal.addEventListener("click", (e) => {
-  if (e.target === modal) modalClose();
+  if (e.target === modal || e.target.getAttribute("data-close") == "")
+    modalClose();
 });
 
 document.addEventListener("keydown", (e) => {
@@ -202,20 +200,22 @@ new MenuCard(
 const forms = document.querySelectorAll("form");
 
 const message = {
-  loading: "Загрузка...",
-  success: "Данные отправлены",
-  failure: "Ошибка",
+  loading: "img/form/loader.svg",
+  success: "Спасибо! Мы свяжемся с Вами в ближайшее время",
+  failure: "Что-то пошло не так",
 };
 
 function postData(form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const statusMesssage = document.createElement("div");
-    statusMesssage.style.marginTop = "10px";
-    statusMesssage.style.textAlign = "center";
-    statusMesssage.textContent = message.loading;
-    form.append(statusMesssage);
+    const statusMesssage = document.createElement("img");
+    statusMesssage.src = message.loading;
+    statusMesssage.style.cssText = `
+      display: block;
+      margin: 0 auto;
+    `;
+    form.insertAdjacentElement("afterend", statusMesssage);
 
     const request = new XMLHttpRequest();
     request.open("POST", "server.php");
@@ -232,14 +232,35 @@ function postData(form) {
     request.addEventListener("load", () => {
       if (request.status === 200) {
         console.log(request.response);
-        statusMesssage.textContent = message.success;
+        showThanksModal(message.success);
         form.reset();
-        setTimeout(() => statusMesssage.remove(), 3000);
+        statusMesssage.remove();
       } else {
-        statusMesssage.textContent = message.failure;
+        showThanksModal(message.failure);
       }
     });
   });
+}
+
+function showThanksModal(message) {
+  const prevContentModal = document.querySelector(".modal__content");
+
+  prevContentModal.style.display = "none";
+  modalOpen();
+
+  const thanksModal = document.createElement("div");
+  thanksModal.classList.add("modal__content");
+  thanksModal.innerHTML = `
+    <div data-close class="modal__close">×</div>
+    <div class="modal__title">${message}</div>
+  `;
+
+  document.querySelector(".modal__dialog").append(thanksModal);
+  setTimeout(() => {
+    thanksModal.remove();
+    prevContentModal.style.display = "block";
+    modalClose();
+  }, 4000);
 }
 
 forms.forEach((item) => postData(item));
