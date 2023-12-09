@@ -197,3 +197,49 @@ new MenuCard(
   5.5,
   ".menu__field .container"
 );
+
+// forms
+const forms = document.querySelectorAll("form");
+
+const message = {
+  loading: "Загрузка...",
+  success: "Данные отправлены",
+  failure: "Ошибка",
+};
+
+function postData(form) {
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const statusMesssage = document.createElement("div");
+    statusMesssage.style.marginTop = "10px";
+    statusMesssage.style.textAlign = "center";
+    statusMesssage.textContent = message.loading;
+    form.append(statusMesssage);
+
+    const request = new XMLHttpRequest();
+    request.open("POST", "server.php");
+    request.setRequestHeader("Content-type", "application/json");
+    const formData = new FormData(form);
+
+    const object = {};
+    formData.forEach((value, key) => {
+      object[key] = value;
+    });
+
+    request.send(JSON.stringify(object));
+
+    request.addEventListener("load", () => {
+      if (request.status === 200) {
+        console.log(request.response);
+        statusMesssage.textContent = message.success;
+        form.reset();
+        setTimeout(() => statusMesssage.remove(), 3000);
+      } else {
+        statusMesssage.textContent = message.failure;
+      }
+    });
+  });
+}
+
+forms.forEach((item) => postData(item));
