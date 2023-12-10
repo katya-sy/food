@@ -264,3 +264,7 @@ function showThanksModal(message) {
 }
 
 forms.forEach((item) => postData(item));
+
+fetch("http://localhost:3000/menu")
+  .then((data) => data.json())
+  .then((res) => console.log(res));
