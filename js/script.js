@@ -154,7 +154,7 @@ class MenuCard {
 
     item.innerHTML = `
     <img src="${this.imgUrl}" alt="${this.imgAlt}" />
-    <h3 class="menu__item-subtitle">Меню "${this.title}"</h3>
+    <h3 class="menu__item-subtitle">${this.title}</h3>
     <div class="menu__item-descr">
       ${this.desc}
     </div>
@@ -205,7 +205,19 @@ const message = {
   failure: "Что-то пошло не так",
 };
 
-function postData(form) {
+const postData = async (url, data) => {
+  const result = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: data,
+  });
+
+  return await result.json();
+};
+
+function bindPostData(form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -219,19 +231,9 @@ function postData(form) {
 
     const formData = new FormData(form);
 
-    const object = {};
-    formData.forEach((value, key) => {
-      object[key] = value;
-    });
+    const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-    fetch("server.php", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(object),
-    })
-      .then((data) => data.text())
+    postData("http://localhost:3000/requests", json)
       .then((data) => {
         console.log(data);
         showThanksModal(message.success);
@@ -263,7 +265,7 @@ function showThanksModal(message) {
   }, 4000);
 }
 
-forms.forEach((item) => postData(item));
+forms.forEach((item) => bindPostData(item));
 
 fetch("http://localhost:3000/menu")
   .then((data) => data.json())
