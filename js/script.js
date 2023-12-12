@@ -179,8 +179,8 @@ const getResources = async (url) => {
   return await result.json();
 };
 
-getResources("http://localhost:3000/menu").then((data) => {
-  data.forEach(({ img, altimg, title, descr, price }) => {
+axios.get("http://localhost:3000/menu").then((data) => {
+  data.data.forEach(({ img, altimg, title, descr, price }) => {
     new MenuCard(img, altimg, title, descr, price, ".menu__field .container");
   });
 });
