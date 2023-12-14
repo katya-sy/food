@@ -259,3 +259,51 @@ forms.forEach((item) => bindPostData(item));
 fetch("http://localhost:3000/menu")
   .then((data) => data.json())
   .then((res) => console.log(res));
+
+// slider
+const slides = document.querySelectorAll(".offer__slide"),
+  slidePrevArrow = document.querySelector(".offer__slider-prev"),
+  slideNextArrow = document.querySelector(".offer__slider-next"),
+  sliderCounterCurrent = document.querySelector("#current"),
+  sliderCounterTotal = document.querySelector("#total");
+
+let activeIndex = 0;
+
+function initSlider() {
+  slides.forEach((slide, index) => {
+    if (index !== activeIndex) slide.style.display = "none";
+  });
+  sliderCounterCurrent.textContent = getZero(activeIndex + 1);
+  sliderCounterTotal.textContent = getZero(slides.length);
+}
+
+function navSlider(next = true) {
+  slides[activeIndex].style.display = "none";
+
+  if (next) {
+    if (activeIndex === slides.length - 1) {
+      activeIndex = 0;
+    } else {
+      activeIndex++;
+    }
+  } else {
+    if (activeIndex === 0) {
+      activeIndex = slides.length - 1;
+    } else {
+      activeIndex--;
+    }
+  }
+
+  sliderCounterCurrent.textContent = getZero(activeIndex + 1);
+  slides[activeIndex].style.display = "block";
+}
+
+initSlider();
+
+slidePrevArrow.addEventListener("click", () => {
+  navSlider(false);
+});
+
+slideNextArrow.addEventListener("click", () => {
+  navSlider();
+});
