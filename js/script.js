@@ -261,17 +261,35 @@ fetch("http://localhost:3000/menu")
   .then((res) => console.log(res));
 
 // slider
-const slidesWrapper = document.querySelector(".offer__slider-wrapper"),
+const slider = document.querySelector(".offer__slider"),
+  slidesWrapper = slider.querySelector(".offer__slider-wrapper"),
   slides = slidesWrapper.querySelectorAll(".offer__slide"),
-  slidePrevArrow = document.querySelector(".offer__slider-prev"),
-  slideNextArrow = document.querySelector(".offer__slider-next"),
-  sliderCounterCurrent = document.querySelector("#current"),
-  sliderCounterTotal = document.querySelector("#total"),
+  slidePrevArrow = slider.querySelector(".offer__slider-prev"),
+  slideNextArrow = slider.querySelector(".offer__slider-next"),
+  sliderCounterCurrent = slider.querySelector("#current"),
+  sliderCounterTotal = slider.querySelector("#total"),
   slidesField = slidesWrapper.querySelector(".offer__slider-inner"),
-  widthOfSlidesWrapper = window.getComputedStyle(slidesWrapper).width;
+  widthOfSlidesWrapper = window.getComputedStyle(slidesWrapper).width,
+  sliderIndicators = document.createElement("ol"),
+  sliderIndicatorDots = [];
 
 let activeIndex = 0,
   offset = 0;
+
+function createSliderIndicators() {
+  sliderIndicators.classList.add("carousel-indicators");
+  slider.append(sliderIndicators);
+
+  slides.forEach((_slide, index) => {
+    const dot = document.createElement("li");
+    dot.classList.add("dot");
+    dot.setAttribute("data-slide-to", index);
+    sliderIndicators.append(dot);
+    sliderIndicatorDots.push(dot);
+  });
+
+  sliderIndicatorDots[activeIndex].style.backgroundColor = "#303030";
+}
 
 function initSlider() {
   sliderCounterCurrent.textContent = getZero(activeIndex + 1);
@@ -283,12 +301,24 @@ function initSlider() {
 
   slidesWrapper.style.overflow = "hidden";
 
+  slider.style.position = "relative";
+
   slides.forEach((slide) => {
     slide.style.width = widthOfSlidesWrapper;
   });
+
+  createSliderIndicators();
+}
+
+function toActiveSlide() {
+  sliderIndicatorDots[activeIndex].style.backgroundColor = "#303030";
+  slidesField.style.transform = `translateX(-${offset}px)`;
+  sliderCounterCurrent.textContent = getZero(activeIndex + 1);
 }
 
 function navSlider(next = true) {
+  sliderIndicatorDots[activeIndex].style.backgroundColor = "#fff";
+
   if (next) {
     if (offset == parseFloat(widthOfSlidesWrapper) * (slides.length - 1)) {
       offset = 0;
@@ -315,8 +345,7 @@ function navSlider(next = true) {
     }
   }
 
-  slidesField.style.transform = `translateX(-${offset}px)`;
-  sliderCounterCurrent.textContent = getZero(activeIndex + 1);
+  toActiveSlide();
 }
 
 initSlider();
@@ -327,4 +356,16 @@ slideNextArrow.addEventListener("click", () => {
 
 slidePrevArrow.addEventListener("click", () => {
   navSlider(false);
+});
+
+sliderIndicatorDots.forEach((dot) => {
+  dot.addEventListener("click", (e) => {
+    sliderIndicatorDots[activeIndex].style.backgroundColor = "#fff";
+
+    const slideTo = e.target.getAttribute("data-slide-to");
+    activeIndex = +slideTo;
+    offset = parseFloat(widthOfSlidesWrapper) * slideTo;
+
+    toActiveSlide();
+  });
 });
