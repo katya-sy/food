@@ -261,32 +261,53 @@ fetch("http://localhost:3000/menu")
   .then((res) => console.log(res));
 
 // slider
-const slides = document.querySelectorAll(".offer__slide"),
+const slidesWrapper = document.querySelector(".offer__slider-wrapper"),
+  slides = slidesWrapper.querySelectorAll(".offer__slide"),
   slidePrevArrow = document.querySelector(".offer__slider-prev"),
   slideNextArrow = document.querySelector(".offer__slider-next"),
   sliderCounterCurrent = document.querySelector("#current"),
-  sliderCounterTotal = document.querySelector("#total");
+  sliderCounterTotal = document.querySelector("#total"),
+  slidesField = slidesWrapper.querySelector(".offer__slider-inner"),
+  widthOfSlidesWrapper = window.getComputedStyle(slidesWrapper).width;
 
-let activeIndex = 0;
+let activeIndex = 0,
+  offset = 0;
 
 function initSlider() {
-  slides.forEach((slide, index) => {
-    if (index !== activeIndex) slide.style.display = "none";
-  });
   sliderCounterCurrent.textContent = getZero(activeIndex + 1);
   sliderCounterTotal.textContent = getZero(slides.length);
+
+  slidesField.style.width = 100 * slides.length + "%";
+  slidesField.style.display = "flex";
+  slidesField.style.transition = "0.5s all";
+
+  slidesWrapper.style.overflow = "hidden";
+
+  slides.forEach((slide) => {
+    slide.style.width = widthOfSlidesWrapper;
+  });
 }
 
 function navSlider(next = true) {
-  slides[activeIndex].style.display = "none";
-
   if (next) {
+    if (offset == parseFloat(widthOfSlidesWrapper) * (slides.length - 1)) {
+      offset = 0;
+    } else {
+      offset += parseFloat(widthOfSlidesWrapper);
+    }
+
     if (activeIndex === slides.length - 1) {
       activeIndex = 0;
     } else {
       activeIndex++;
     }
   } else {
+    if (offset == 0) {
+      offset = parseFloat(widthOfSlidesWrapper) * (slides.length - 1);
+    } else {
+      offset -= parseFloat(widthOfSlidesWrapper);
+    }
+
     if (activeIndex === 0) {
       activeIndex = slides.length - 1;
     } else {
@@ -294,16 +315,16 @@ function navSlider(next = true) {
     }
   }
 
+  slidesField.style.transform = `translateX(-${offset}px)`;
   sliderCounterCurrent.textContent = getZero(activeIndex + 1);
-  slides[activeIndex].style.display = "block";
 }
 
 initSlider();
 
-slidePrevArrow.addEventListener("click", () => {
-  navSlider(false);
-});
-
 slideNextArrow.addEventListener("click", () => {
   navSlider();
+});
+
+slidePrevArrow.addEventListener("click", () => {
+  navSlider(false);
 });
