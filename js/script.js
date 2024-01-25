@@ -372,11 +372,12 @@ sliderIndicatorDots.forEach((dot) => {
 
 // calculator
 const result = document.querySelector(".calculating__result span");
-let gender = "female",
+
+let gender = localStorage.getItem("gender") || "female",
   height,
   weight,
   age,
-  ratio = 1.375;
+  ratio = localStorage.getItem("ratio") || 1.375;
 
 function calcCalories() {
   if (!gender || !height || !weight || !age || !ratio) {
@@ -395,21 +396,44 @@ function calcCalories() {
   }
 }
 
-function getStaticInfo(parentSelector, activeClass) {
-  const elements = document.querySelectorAll(`${parentSelector} div`);
+function checkAddActiveClass(condition, element, activeClass) {
+  condition
+    ? element.classList.add(activeClass)
+    : element.classList.remove(activeClass);
+}
+
+function initLocalSettings(selector, activeClass) {
+  const elements = document.querySelectorAll(selector);
+
+  elements.forEach((element) => {
+    checkAddActiveClass(
+      element.getAttribute("id") === localStorage.getItem("gender"),
+      element,
+      activeClass
+    );
+    checkAddActiveClass(
+      element.getAttribute("data-ratio") === localStorage.getItem("ratio"),
+      element,
+      activeClass
+    );
+  });
+}
+
+function getStaticInfo(selector, activeClass) {
+  const elements = document.querySelectorAll(selector);
 
   elements.forEach((element) => {
     element.addEventListener("click", (e) => {
       if (e.target.getAttribute("data-ratio")) {
         ratio = +e.target.getAttribute("data-ratio");
+        localStorage.setItem("ratio", ratio);
       } else {
         gender = e.target.getAttribute("id");
+        localStorage.setItem("gender", gender);
       }
 
       elements.forEach((element) => {
-        e.target === element
-          ? element.classList.add(activeClass)
-          : element.classList.remove(activeClass);
+        checkAddActiveClass(e.target === element, element, activeClass);
       });
 
       calcCalories();
@@ -421,6 +445,10 @@ function getDynamicInfo(selector) {
   const input = document.querySelector(selector);
 
   input.addEventListener("input", () => {
+    input.value.match(/\D/g)
+      ? (input.style.border = "1px solid red")
+      : (input.style.border = "none");
+
     switch (input.getAttribute("id")) {
       case "height":
         height = +input.value;
@@ -436,10 +464,19 @@ function getDynamicInfo(selector) {
   });
 }
 
+initLocalSettings("#gender div", "calculating__choose-item_active");
+initLocalSettings(
+  ".calculating__choose_big div",
+  "calculating__choose-item_active"
+);
+
 calcCalories();
 
-getStaticInfo("#gender", "calculating__choose-item_active");
-getStaticInfo(".calculating__choose_big", "calculating__choose-item_active");
+getStaticInfo("#gender div", "calculating__choose-item_active");
+getStaticInfo(
+  ".calculating__choose_big div",
+  "calculating__choose-item_active"
+);
 
 getDynamicInfo("#height");
 getDynamicInfo("#weight");
