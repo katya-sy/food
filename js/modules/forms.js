@@ -1,22 +1,13 @@
-function forms() {
-  const forms = document.querySelectorAll("form");
+import { modalOpen, modalClose } from "./modal";
+import { postData } from "../services/sevices";
+
+function forms(formSelector, modalTimerId) {
+  const forms = document.querySelectorAll(formSelector);
 
   const message = {
     loading: "img/form/loader.svg",
     success: "Спасибо! Мы свяжемся с Вами в ближайшее время",
     failure: "Что-то пошло не так",
-  };
-
-  const postData = async (url, data) => {
-    const result = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: data,
-    });
-
-    return await result.json();
   };
 
   function bindPostData(form) {
@@ -50,7 +41,7 @@ function forms() {
     const prevContentModal = document.querySelector(".modal__content");
 
     prevContentModal.style.display = "none";
-    modalOpen();
+    modalOpen(".modal", modalTimerId);
 
     const thanksModal = document.createElement("div");
     thanksModal.classList.add("modal__content");
@@ -63,7 +54,7 @@ function forms() {
     setTimeout(() => {
       thanksModal.remove();
       prevContentModal.style.display = "block";
-      modalClose();
+      modalClose(".modal");
     }, 4000);
   }
 

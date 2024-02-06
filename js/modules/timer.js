@@ -1,6 +1,12 @@
-function timer() {
-  const deadline = "2024-03-10";
+function getZero(num) {
+  if (num >= 0 && num < 10) {
+    return `0${num}`;
+  } else {
+    return num;
+  }
+}
 
+function timer(id, deadline) {
   function getTimeRemaining(endtime) {
     const t = Date.parse(endtime) - new Date(),
       days = Math.floor(t / (1000 * 60 * 60 * 24)),
@@ -15,14 +21,6 @@ function timer() {
       minutes: minutes,
       seconds: seconds,
     };
-  }
-
-  function getZero(num) {
-    if (num >= 0 && num < 10) {
-      return `0${num}`;
-    } else {
-      return num;
-    }
   }
 
   function setClock(selector, endtime) {
@@ -47,7 +45,8 @@ function timer() {
     }
   }
 
-  setClock(".timer", deadline);
+  setClock(id, deadline);
 }
 
 export default timer;
+export { getZero };

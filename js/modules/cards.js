@@ -1,3 +1,5 @@
+import { getResources } from "../services/sevices";
+
 function cards() {
   class MenuCard {
     constructor(
@@ -52,18 +54,8 @@ function cards() {
     }
   }
 
-  const getResources = async (url) => {
-    const result = await fetch(url);
-
-    if (!result.ok) {
-      throw new Error(`Could not fetch ${url}, status ${result.status}`);
-    }
-
-    return await result.json();
-  };
-
-  axios.get("http://localhost:3000/menu").then((data) => {
-    data.data.forEach(({ img, altimg, title, descr, price }) => {
+  getResources("http://localhost:3000/menu").then((data) => {
+    data.forEach(({ img, altimg, title, descr, price }) => {
       new MenuCard(img, altimg, title, descr, price, ".menu__field .container");
     });
   });

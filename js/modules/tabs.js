@@ -1,8 +1,13 @@
-function tabs() {
-  const tabs = document.querySelectorAll(".tabheader__item"),
-    tabsNav = document.querySelector(".tabheader__items"),
-    tabsContent = document.querySelectorAll(".tabcontent");
-  let tabheaderItemActive = document.querySelector(".tabheader__item_active");
+function tabs(
+  tabsSelector,
+  tabsContentSelector,
+  tabsParentSelector,
+  activeClass
+) {
+  const tabs = document.querySelectorAll(tabsSelector),
+    tabsNav = document.querySelector(tabsParentSelector),
+    tabsContent = document.querySelectorAll(tabsContentSelector);
+  let tabheaderItemActive = document.querySelector(`.${activeClass}`);
 
   function hideTabsContent() {
     tabsContent.forEach((item) => {
@@ -10,7 +15,7 @@ function tabs() {
     });
 
     tabs.forEach((item, i) => {
-      if (item.classList.contains("tabheader__item_active")) {
+      if (item.classList.contains(activeClass)) {
         tabsContent[i].style.display = "block";
       }
     });
@@ -21,12 +26,12 @@ function tabs() {
   tabsNav.addEventListener("click", (e) => {
     if (
       e.target &&
-      e.target.classList.contains("tabheader__item") &&
+      e.target.classList.contains(tabsSelector.slice(1)) &&
       e.target !== tabheaderItemActive
     ) {
-      tabheaderItemActive.classList.remove("tabheader__item_active");
+      tabheaderItemActive.classList.remove(activeClass);
       tabheaderItemActive = e.target;
-      tabheaderItemActive.classList.add("tabheader__item_active");
+      tabheaderItemActive.classList.add(activeClass);
       hideTabsContent();
     }
   });

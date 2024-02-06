@@ -1,26 +1,29 @@
-function slider() {
-  const slider = document.querySelector(".offer__slider"),
-    slidesWrapper = slider.querySelector(".offer__slider-wrapper"),
-    slides = slidesWrapper.querySelectorAll(".offer__slide"),
-    slidePrevArrow = slider.querySelector(".offer__slider-prev"),
-    slideNextArrow = slider.querySelector(".offer__slider-next"),
-    sliderCounterCurrent = slider.querySelector("#current"),
-    sliderCounterTotal = slider.querySelector("#total"),
-    slidesField = slidesWrapper.querySelector(".offer__slider-inner"),
+import { getZero } from "./timer";
+
+function slider({
+  container,
+  slide,
+  nextArrow,
+  prevArrow,
+  totalCounter,
+  currentCounter,
+  wrapper,
+  field,
+}) {
+  const slider = document.querySelector(container),
+    slidesWrapper = slider.querySelector(wrapper),
+    slides = slidesWrapper.querySelectorAll(slide),
+    slidePrevArrow = slider.querySelector(prevArrow),
+    slideNextArrow = slider.querySelector(nextArrow),
+    sliderCounterCurrent = slider.querySelector(currentCounter),
+    sliderCounterTotal = slider.querySelector(totalCounter),
+    slidesField = slidesWrapper.querySelector(field),
     widthOfSlidesWrapper = window.getComputedStyle(slidesWrapper).width,
     sliderIndicators = document.createElement("ol"),
     sliderIndicatorDots = [];
 
   let activeIndex = 0,
     offset = 0;
-
-  function getZero(num) {
-    if (num >= 0 && num < 10) {
-      return `0${num}`;
-    } else {
-      return num;
-    }
-  }
 
   function createSliderIndicators() {
     sliderIndicators.classList.add("carousel-indicators");

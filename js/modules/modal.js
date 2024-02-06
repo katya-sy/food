@@ -1,43 +1,49 @@
-function modal() {
-  const modalTrigger = document.querySelectorAll("[data-modal]"),
-    modal = document.querySelector(".modal"),
-    modalTimerId = setTimeout(modalOpen, 30000);
+function modalOpen(modalSelector, modalTimerId) {
+  const modal = document.querySelector(modalSelector);
 
-  function modalOpen() {
-    modal.style.display = "block";
-    document.body.style.overflow = "hidden";
-    clearTimeout(modalTimerId);
-  }
+  modal.style.display = "block";
+  document.body.style.overflow = "hidden";
 
-  function modalClose() {
-    modal.style.display = "none";
-    document.body.style.overflow = "";
-  }
+  if (modalTimerId) clearTimeout(modalTimerId);
+}
+
+function modalClose(modalSelector) {
+  const modal = document.querySelector(modalSelector);
+
+  modal.style.display = "none";
+  document.body.style.overflow = "";
+}
+
+function modal(triggerSelector, modalSelector, modalTimerId) {
+  const modalTrigger = document.querySelectorAll(triggerSelector),
+    modal = document.querySelector(modalSelector);
 
   function modalShowByScroll() {
     if (
       window.scrollY + document.documentElement.clientHeight >=
       document.documentElement.scrollHeight
     ) {
-      modalOpen();
+      modalOpen(modalSelector, modalTimerId);
       window.removeEventListener("scroll", modalShowByScroll);
     }
   }
 
   modalTrigger.forEach((btn) => {
-    btn.addEventListener("click", modalOpen);
+    btn.addEventListener("click", () => modalOpen(modalSelector, modalTimerId));
   });
 
   modal.addEventListener("click", (e) => {
     if (e.target === modal || e.target.getAttribute("data-close") == "")
-      modalClose();
+      modalClose(modalSelector);
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.code === "Escape" && modal.style.display === "block") modalClose();
+    if (e.code === "Escape" && modal.style.display === "block")
+      modalClose(modalSelector);
   });
 
   window.addEventListener("scroll", modalShowByScroll);
 }
 
 export default modal;
+export { modalOpen, modalClose };
